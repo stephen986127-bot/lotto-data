@@ -1,0 +1,33 @@
+name: Auto Update Supreme Toto
+
+on:
+  schedule:
+    # 每天凌晨 03:00 自动运行（可改成你想要的时间）
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run crawler
+        run: python crawler.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "auto-lotto-bot"
+          git config user.email "bot@example.com"
+          git add results.json
+          git commit -m "Auto update lotto data" || echo "No new draw"
+          git push
