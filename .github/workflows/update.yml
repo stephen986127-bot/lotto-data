@@ -2,9 +2,20 @@ name: Auto Update Supreme Toto
 
 on:
   schedule:
-    # 每天凌晨 03:00 自动运行（可改成你想要的时间）
-    - cron: "0 3 * * *"
+    # Malaysia time = UTC+8
+    # 22:30 MYT = 14:30 UTC
+
+    # Wednesday
+    - cron: "30 14 * * 3"
+
+    # Saturday
+    - cron: "30 14 * * 6"
+
+    # Sunday
+    - cron: "30 14 * * 0"
+
   workflow_dispatch:
+
 
 jobs:
   update:
