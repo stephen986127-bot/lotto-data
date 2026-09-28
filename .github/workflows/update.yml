@@ -16,7 +16,6 @@ on:
 
   workflow_dispatch:
 
-
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -32,13 +31,19 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
 
-      - name: Run crawler
-        run: python crawler.py
+      - name: Run crawler (with retry)
+        run: |
+          for i in 1 2 3; do
+            echo "Attempt $i..."
+            python crawler.py && break
+            echo "Failed, waiting 30s before retry..."
+            sleep 30
+          done
 
       - name: Commit and push
         run: |
           git config user.name "auto-lotto-bot"
           git config user.email "bot@example.com"
           git add results.json
-          git commit -m "Auto update lotto data" || echo "No new draw"
+          git diff --cached --quiet || git commit -m "Auto update: $(date '+%Y-%m-%d %H:%M') MYT"
           git push
